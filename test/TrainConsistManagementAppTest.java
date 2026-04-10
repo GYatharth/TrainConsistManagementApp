@@ -1,61 +1,65 @@
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import java.util.regex.*;
+import java.util.Arrays;
 
 public class TrainConsistManagementAppTest {
 
-    boolean isValidTrainID(String id) {
-        return Pattern.matches("TRN-\\d{4}", id);
-    }
+    boolean binarySearch(String[] arr, String key) {
+        String[] a = arr.clone();
+        Arrays.sort(a);
 
-    boolean isValidCargoCode(String code) {
-        return Pattern.matches("PET-[A-Z]{2}", code);
-    }
+        int low = 0, high = a.length - 1;
 
-    @Test
-    void testRegex_ValidTrainID() {
-        assertTrue(isValidTrainID("TRN-1234"));
-    }
+        while (low <= high) {
+            int mid = (low + high) / 2;
+            int cmp = key.compareTo(a[mid]);
 
-    @Test
-    void testRegex_InvalidTrainIDFormat() {
-        assertFalse(isValidTrainID("TRAIN12"));
-        assertFalse(isValidTrainID("TRN12A"));
-        assertFalse(isValidTrainID("1234-TRN"));
+            if (cmp == 0) return true;
+            else if (cmp > 0) low = mid + 1;
+            else high = mid - 1;
+        }
+        return false;
     }
 
     @Test
-    void testRegex_ValidCargoCode() {
-        assertTrue(isValidCargoCode("PET-AB"));
+    void testBinarySearch_BogieFound() {
+        String[] arr = {"BG101","BG205","BG309","BG412","BG550"};
+        assertTrue(binarySearch(arr, "BG309"));
     }
 
     @Test
-    void testRegex_InvalidCargoCodeFormat() {
-        assertFalse(isValidCargoCode("PET-ab"));
-        assertFalse(isValidCargoCode("PET123"));
-        assertFalse(isValidCargoCode("AB-PET"));
+    void testBinarySearch_BogieNotFound() {
+        String[] arr = {"BG101","BG205","BG309","BG412","BG550"};
+        assertFalse(binarySearch(arr, "BG999"));
     }
 
     @Test
-    void testRegex_TrainIDDigitLengthValidation() {
-        assertFalse(isValidTrainID("TRN-123"));
-        assertFalse(isValidTrainID("TRN-12345"));
+    void testBinarySearch_FirstElementMatch() {
+        String[] arr = {"BG101","BG205","BG309"};
+        assertTrue(binarySearch(arr, "BG101"));
     }
 
     @Test
-    void testRegex_CargoCodeUppercaseValidation() {
-        assertFalse(isValidCargoCode("PET-ab"));
+    void testBinarySearch_LastElementMatch() {
+        String[] arr = {"BG101","BG205","BG550"};
+        assertTrue(binarySearch(arr, "BG550"));
     }
 
     @Test
-    void testRegex_EmptyInputHandling() {
-        assertFalse(isValidTrainID(""));
-        assertFalse(isValidCargoCode(""));
+    void testBinarySearch_SingleElementArray() {
+        String[] arr = {"BG101"};
+        assertTrue(binarySearch(arr, "BG101"));
     }
 
     @Test
-    void testRegex_ExactPatternMatch() {
-        assertFalse(isValidTrainID("TRN-1234XYZ"));
-        assertFalse(isValidCargoCode("PET-AB12"));
+    void testBinarySearch_EmptyArray() {
+        String[] arr = {};
+        assertFalse(binarySearch(arr, "BG101"));
+    }
+
+    @Test
+    void testBinarySearch_UnsortedInputHandled() {
+        String[] arr = {"BG309","BG101","BG550","BG205","BG412"};
+        assertTrue(binarySearch(arr, "BG205"));
     }
 }
