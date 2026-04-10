@@ -1,61 +1,44 @@
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import java.util.regex.*;
 
 public class TrainConsistManagementAppTest {
 
-    boolean isValidTrainID(String id) {
-        return Pattern.matches("TRN-\\d{4}", id);
-    }
-
-    boolean isValidCargoCode(String code) {
-        return Pattern.matches("PET-[A-Z]{2}", code);
-    }
-
-    @Test
-    void testRegex_ValidTrainID() {
-        assertTrue(isValidTrainID("TRN-1234"));
+    boolean search(String[] arr, String key) {
+        for (String id : arr) {
+            if (id.equals(key)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Test
-    void testRegex_InvalidTrainIDFormat() {
-        assertFalse(isValidTrainID("TRAIN12"));
-        assertFalse(isValidTrainID("TRN12A"));
-        assertFalse(isValidTrainID("1234-TRN"));
+    void testSearch_BogieFound() {
+        String[] arr = {"BG101","BG205","BG309","BG412","BG550"};
+        assertTrue(search(arr, "BG309"));
     }
 
     @Test
-    void testRegex_ValidCargoCode() {
-        assertTrue(isValidCargoCode("PET-AB"));
+    void testSearch_BogieNotFound() {
+        String[] arr = {"BG101","BG205","BG309","BG412","BG550"};
+        assertFalse(search(arr, "BG999"));
     }
 
     @Test
-    void testRegex_InvalidCargoCodeFormat() {
-        assertFalse(isValidCargoCode("PET-ab"));
-        assertFalse(isValidCargoCode("PET123"));
-        assertFalse(isValidCargoCode("AB-PET"));
+    void testSearch_FirstElementMatch() {
+        String[] arr = {"BG101","BG205","BG309"};
+        assertTrue(search(arr, "BG101"));
     }
 
     @Test
-    void testRegex_TrainIDDigitLengthValidation() {
-        assertFalse(isValidTrainID("TRN-123"));
-        assertFalse(isValidTrainID("TRN-12345"));
+    void testSearch_LastElementMatch() {
+        String[] arr = {"BG101","BG205","BG550"};
+        assertTrue(search(arr, "BG550"));
     }
 
     @Test
-    void testRegex_CargoCodeUppercaseValidation() {
-        assertFalse(isValidCargoCode("PET-ab"));
-    }
-
-    @Test
-    void testRegex_EmptyInputHandling() {
-        assertFalse(isValidTrainID(""));
-        assertFalse(isValidCargoCode(""));
-    }
-
-    @Test
-    void testRegex_ExactPatternMatch() {
-        assertFalse(isValidTrainID("TRN-1234XYZ"));
-        assertFalse(isValidCargoCode("PET-AB12"));
+    void testSearch_SingleElementArray() {
+        String[] arr = {"BG101"};
+        assertTrue(search(arr, "BG101"));
     }
 }
